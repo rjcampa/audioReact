@@ -1,0 +1,75 @@
+<html>
+<head>
+  <title>Audio Place </title>
+  <script src="https://fb.me/react-0.13.3.js"></script>
+  <script src="https://fb.me/JSXTransformer-0.13.3.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.96.1/css/materialize.min.css">
+
+</head>
+<body>
+  <div class="container" id="content">
+
+  </div>
+
+  <script type="text/jsx">
+  MusicList=[
+{
+  audioSource:"./realDollFactory.mp3",
+  songTitle: "Real Doll Factory"
+},
+{
+  audioSource:"./FallDouble.mp3",
+  songTitle: "Fall Double"
+},
+];
+
+var playSong = function(songTitle){
+  for (song in MusicList){
+    if (songTitle === MusicList[song].songTitle){
+      return (MusicList[song].audioSource);
+    }
+  }
+};
+
+  var MusicBox = React.createClass({
+    handlesClick: function(){
+      this.props.handleSelect(this.props.songTitle);
+    },
+    render: function(){
+      return (<h3 onClick={this.handlesClick}>{this.props.songTitle}</h3>
+        )}});
+
+
+  var MusicPage = React.createClass({
+    getInitialState: function(){
+      return {isActive: MusicList[0].audioSource}
+    },
+    handleClick: function(song){
+      newtrack = playSong(song);
+      console.log(newtrack);
+      this.setState({isActive: newtrack});
+      this.forceUpdate(MusicPage);
+    },
+    render: function(){
+      var list = MusicList.map(function(track){
+      return <MusicBox 
+              songTitle={track.songTitle}
+              handleSelect={this.handleClick}/>
+    }.bind(this));
+    return (
+      <div>
+        <audio controls>
+          <source src={this.state.isActive} type="audio/ogg"></source>
+        </audio>
+        <div className="col-6-xs">
+          {list} 
+        </div>
+      </div>
+    )}});
+
+React.render(<MusicPage MusicList/>, document.getElementById('content'));
+
+  </script>
+  </body>
+</body>
+</html>
